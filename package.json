@@ -1,0 +1,36 @@
+{
+  "name": "app-socio-bebedor-back",
+  "version": "1.0.0",
+  "description": "Sócio Bebedor Back-End Dev",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "sucrase ./src -d ./dist --transforms typescript,imports"
+  },
+  "keywords": [],
+  "author": "Lulu Code",
+  "license": "ISC",
+  "dependencies": {
+    "@types/mysql2": "types/mysql2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.5.3",
+    "mysql2": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.2",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.20.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "nodemon": "^1.19.1",
+    "sucrase": "^3.12.1",
+    "typescript": "^3.8.2"
+  }
+}
