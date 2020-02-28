@@ -5,6 +5,7 @@ const routes = Router()
 
 routes.get('/', (req, res) => res.json('Socio Bebedor API'))
 routes.get('/teams', TeamsController.getTeams)
+routes.get('/teams/:id', TeamsController.getTeamById)
 routes.post('/teams', TeamsController.createTeam)
 
 export default routes
