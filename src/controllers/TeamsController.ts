@@ -3,10 +3,29 @@ import { connect } from '../database'
 import { Team } from '../interfaces/Team'
 
 class TeamsController {
+  defaultLimit = 10;
+  defaultOffset = 0
+
   public async getTeams (req: Request, res: Response): Promise<Response> {
+    console.log(this)
     const conn = await connect()
-    const teams = await conn.query('SELECT * FROM teams')
-    return res.json(teams[0])
+    const count = await conn.query('SELECT count(*) as TotalCount FROM teams')
+    const formattedCount = count[0][0].TotalCount
+    const { limit, offset } = req.query
+
+    if (limit) {
+      this.defaultLimit = limit
+    }
+
+    if (offset) {
+      this.defaultOffset = offset
+    }
+
+    const teams = await conn.query('SELECT * FROM teams ORDER BY id ASC LIMIT ? OFFSET ?', [this.defaultLimit, this.defaultOffset])
+    return res.json({
+      count: formattedCount,
+      data: teams[0]
+    })
   }
 
   public async getTeamById (req: Request, res: Response): Promise<Response> {
