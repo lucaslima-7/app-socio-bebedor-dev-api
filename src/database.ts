@@ -1,13 +1,21 @@
 import { createPool } from 'mysql2/promise'
 
 export async function connect () {
+  const {
+    MYSQL_HOST,
+    MYSQL_USER,
+    MYSQL_PASSWORD,
+    MYSQL_DATABASE
+  } = process.env
+
   const connection = await createPool({
-    host: 'socio-bebedor-dev-instance.cl7ppavk5brt.us-east-1.rds.amazonaws.com',
-    user: 'admin',
-    password: 'socio_2020#',
-    database: 'socio_bebedor_dev',
+    host: MYSQL_HOST,
+    user: MYSQL_USER,
+    password: MYSQL_PASSWORD,
+    database: MYSQL_DATABASE,
     connectTimeout: 5000,
     connectionLimit: 10
   })
+
   return connection
 }

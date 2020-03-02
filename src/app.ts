@@ -5,7 +5,7 @@ import routes from './routes/routes'
 class App {
   public express: Application
 
-  public constructor () {
+  constructor () {
     this.express = express()
     this.middlewares()
     this.routes()
