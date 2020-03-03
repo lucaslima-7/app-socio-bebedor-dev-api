@@ -1,6 +1,7 @@
 import express, { Application } from 'express'
 import cors from 'cors'
-import routes from './routes/routes'
+import routes from './routes/teamsRoutes'
+import helmet from 'helmet'
 
 class App {
   public express: Application
@@ -14,6 +15,7 @@ class App {
   private middlewares (): void {
     this.express.use(express.json())
     this.express.use(cors())
+    this.express.use(helmet())
   }
 
   private routes (): void {

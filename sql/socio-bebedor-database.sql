@@ -31,7 +31,8 @@ create table users (
     profilePic varchar(255),
     birthDate datetime(3) not null,
     `active` bit(1) not null,
-    gender enum("M", "F")
+    gender enum("M", "F"),
+    `role` enum("guest", "admin")
 );
 
 create table addresses (

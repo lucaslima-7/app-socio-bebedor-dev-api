@@ -41,6 +41,7 @@ class TeamsController {
   }
 
   public async getTeamById (req: Request, res: Response): Promise<Response> {
+    console.log('Entrei aqui')
     const id = parseInt(req.params.id)
 
     if (!id) {
