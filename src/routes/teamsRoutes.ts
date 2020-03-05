@@ -4,9 +4,9 @@ import { checkJwt } from '../middlewares/checkJwt'
 
 const router = Router()
 
-router.get('/teams', [checkJwt], TeamsController.getTeams)
-router.get('/teams/count', TeamsController.getTeamsCount)
-router.get('/teams/:id', TeamsController.getTeamById)
-router.post('/teams', TeamsController.createTeam)
+router.get('/', [checkJwt], TeamsController.getTeams)
+router.get('/count', TeamsController.getTeamsCount)
+router.get('/:id', TeamsController.getTeamById)
+router.post('/', TeamsController.createTeam)
 
 export default router

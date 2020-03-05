@@ -8,14 +8,14 @@ class TeamsController {
   private defaultOffset = 0;
   private table = 'teams'
 
-  constructor() {
+  constructor () {
     this.getTeamsCount = this.getTeamsCount.bind(this)
     this.getTeams = this.getTeams.bind(this)
     this.getTeamById = this.getTeamById.bind(this)
     this.createTeam = this.createTeam.bind(this)
   }
 
-  public async getTeamsCount(req: Request, res: Response): Promise<Response> {
+  public async getTeamsCount (req: Request, res: Response): Promise<Response> {
     const conn = await connect()
     const count = await conn.query('SELECT count(*) as TotalCount FROM ??', [this.table])
     const formattedCount = count[0][0].TotalCount
@@ -24,7 +24,7 @@ class TeamsController {
     })
   }
 
-  public async getTeams(req: Request, res: Response): Promise<Response> {
+  public async getTeams (req: Request, res: Response): Promise<Response> {
     const conn = await connect()
     const count = await conn.query('SELECT count(*) as TotalCount FROM ??', [this.table])
     const formattedCount = count[0][0].TotalCount
@@ -40,8 +40,7 @@ class TeamsController {
     })
   }
 
-  public async getTeamById(req: Request, res: Response): Promise<Response> {
-    console.log('Entrei aqui')
+  public async getTeamById (req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id)
 
     if (!id) {
@@ -50,10 +49,12 @@ class TeamsController {
 
     const conn = await connect()
     const team = await conn.query('SELECT * FROM ?? WHERE id = ?', [this.table, id])
-    return res.json(team[0])
+    return res.json({
+      data: team[0]
+    })
   }
 
-  public async createTeam(req: Request, res: Response): Promise<Response> {
+  public async createTeam (req: Request, res: Response): Promise<Response> {
     const reqBody: Team = req.body
     const conn = await connect()
     await conn.query('INSERT INTO ?? SET ?', [this.table, reqBody])
