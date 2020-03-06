@@ -1,22 +1,22 @@
 import { Response, Request } from 'express'
 import { connect } from '../database'
 import HttpException from '../handlers/HttpException'
-import { CreateProvider, UpdateProvider } from '../interfaces/Providers'
+import { CreateProduct, UpdateProduct } from '../interfaces/Products'
 
-class ProvidersController {
+class ProductsController {
   private defaultLimit = 10;
   private defaultOffset = 0;
-  private table = 'providers'
+  private table = 'products'
 
   constructor () {
-    this.getProviders = this.getProviders.bind(this)
-    this.getProviderById = this.getProviderById.bind(this)
-    this.getProvidersCount = this.getProvidersCount.bind(this)
-    this.createProvider = this.createProvider.bind(this)
-    this.updateProvider = this.updateProvider.bind(this)
+    this.getProducts = this.getProducts.bind(this)
+    this.getProductById = this.getProductById.bind(this)
+    this.getProductsCount = this.getProductsCount.bind(this)
+    this.createProduct = this.createProduct.bind(this)
+    this.updateProduct = this.updateProduct.bind(this)
   }
 
-  public async getProvidersCount (req: Request, res: Response): Promise<Response> {
+  public async getProductsCount (req: Request, res: Response): Promise<Response> {
     const conn = await connect()
     const count = await conn.query('SELECT count(*) as TotalCount FROM ??', [this.table])
     const formattedCount = count[0][0].TotalCount
@@ -25,40 +25,40 @@ class ProvidersController {
     })
   }
 
-  public async getProviders (req: Request, res: Response): Promise<Response> {
+  public async getProducts (req: Request, res: Response): Promise<Response> {
     const conn = await connect()
     const count = await conn.query('SELECT count(*) as TotalCount FROM ??', [this.table])
     const formattedCount = count[0][0].TotalCount
     const limit = req.query.limit ? parseInt(req.query.limit) : this.defaultLimit
     const offset = req.query.offset ? parseInt(req.query.offset) : this.defaultOffset
-    const providers = await conn.query(
+    const products = await conn.query(
       'SELECT * FROM ?? ORDER BY id ASC LIMIT ? OFFSET ?',
       [this.table, limit, offset > formattedCount ? formattedCount : offset]
     )
     return res.json({
       count: formattedCount,
-      data: providers[0]
+      data: products[0]
     })
   }
 
-  public async getProviderById (req: Request, res: Response): Promise<Response> {
+  public async getProductById (req: Request, res: Response): Promise<Response> {
     const conn = await connect()
     const id = parseInt(req.params.id)
     if (!id) {
       return HttpException.invalidId(res)
     }
 
-    const provider = await conn.query(
+    const product = await conn.query(
       'SELECT * FROM ?? WHERE id = ?',
       [this.table, id]
     )
     return res.json({
-      data: provider[0]
+      data: product[0]
     })
   }
 
-  public async createProvider (req: Request, res: Response): Promise<Response> {
-    const reqBody: CreateProvider = req.body
+  public async createProduct (req: Request, res: Response): Promise<Response> {
+    const reqBody: CreateProduct = req.body
     const conn = await connect()
     console.log(reqBody)
     await conn.query(
@@ -66,17 +66,17 @@ class ProvidersController {
       [this.table, reqBody]
     )
     return res.json({
-      message: 'Provider Created'
+      message: 'Product Created'
     })
   }
 
-  public async updateProvider (req: Request, res: Response): Promise<Response> {
+  public async updateProduct (req: Request, res: Response): Promise<Response> {
     const conn = await connect()
     const id = parseInt(req.params.id)
     if (!id) {
       return HttpException.invalidId(res)
     }
-    const reqBody: UpdateProvider = req.body
+    const reqBody: UpdateProduct = req.body
     console.log(reqBody)
     await conn.query(
       'UPDATE ?? SET ? WHERE id = ?',
@@ -87,7 +87,7 @@ class ProvidersController {
     })
   }
 
-  public async deleteProvider (req: Request, res: Response): Promise<Response> {
+  public async deleteProduct (req: Request, res: Response): Promise<Response> {
     const command = 'active = 0'
     const conn = await connect()
     const id = parseInt(req.params.id)
@@ -102,4 +102,4 @@ class ProvidersController {
   }
 }
 
-export default new ProvidersController()
+export default new ProductsController()
