@@ -1,7 +1,9 @@
 import { Request, Response } from 'express'
 import { connect } from '../database'
-import { Team } from '../interfaces/Team'
+import { TeamInterface } from '../interfaces/TeamInterface'
 import HttpException from '../handlers/HttpException'
+import TeamsException from '../handlers/TeamsExceptions'
+import Team from '../models/Team'
 
 class TeamsController {
   private defaultLimit = 10;
@@ -44,7 +46,7 @@ class TeamsController {
     const id = parseInt(req.params.id)
 
     if (!id) {
-      return HttpException.invalidId(res)
+      return TeamsException.invalidId(res)
     }
 
     const conn = await connect()
@@ -55,13 +57,36 @@ class TeamsController {
   }
 
   public async createTeam (req: Request, res: Response): Promise<Response> {
-    const reqBody: Team = req.body
-    const conn = await connect()
-    await conn.query('INSERT INTO ?? SET ?', [this.table, reqBody])
-    console.log(reqBody)
-    return res.json({
-      message: 'Team Created'
-    })
+    const name: string = req.body.name
+    const state: string = req.body.state
+    const foundationDate: number = req.body.foundationDate
+
+    console.log(name)
+
+    if (!name) {
+      return TeamsException.invalidName(res)
+    }
+
+    if (!state) {
+      return TeamsException.invalidState(res)
+    }
+
+    if (!foundationDate) {
+      return TeamsException.invalidFoundationDate(res)
+    }
+
+    try {
+      const team = new Team(name, state, foundationDate)
+      console.log(team)
+      const conn = await connect()
+      await conn.query('INSERT INTO ?? SET ?', [this.table, team])
+      return res.json({
+        message: 'Team Created'
+      })
+    } catch (error) {
+      console.log(error)
+      return HttpException.mySQLError(res, error)
+    }
   }
 }
 

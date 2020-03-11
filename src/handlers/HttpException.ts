@@ -1,8 +1,14 @@
 import { Response } from 'express'
 
 class HttpException extends Error {
-  public invalidId (res: Response): Response {
-    return res.status(400).send({ error: 'Id is invalid' })
+  public mySQLError (res: Response, error): Response {
+    return res.status(400).send(
+      {
+        error: {
+          message: error.message,
+          code: error.code
+        }
+      })
   }
 }
 

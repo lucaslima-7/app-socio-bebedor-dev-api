@@ -17,7 +17,8 @@ create table competitions (
 );
 
 create table users (
-	id bigint auto_increment primary key not null,
+	id bigint auto_increment not null,
+    team_id bigint not null,
     federalId varchar(11),
     email varchar(255) not null,
 	`password` varchar(255) not null,
@@ -32,7 +33,12 @@ create table users (
     birthDate datetime(3) not null,
     `active` bit(1) not null,
     gender enum("M", "F"),
-    `role` enum("guest", "admin")
+    `role` enum("guest", "admin"),
+    unique(federalId),
+    unique(email),
+    primary key(id),
+    constraint fk_user_team foreign key (id)
+    references teams(id)
 );
 
 create table addresses (
