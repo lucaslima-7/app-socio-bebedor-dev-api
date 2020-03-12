@@ -4,6 +4,7 @@ import { TeamInterface } from '../interfaces/TeamInterface'
 import HttpException from '../handlers/HttpException'
 import TeamsException from '../handlers/TeamsExceptions'
 import Team from '../models/Team'
+import { validate } from 'class-validator'
 
 class TeamsController {
   private defaultLimit = 10;
@@ -57,9 +58,7 @@ class TeamsController {
   }
 
   public async createTeam (req: Request, res: Response): Promise<Response> {
-    const name: string = req.body.name
-    const state: string = req.body.state
-    const foundationDate: number = req.body.foundationDate
+    const { name, state, foundationDate } = req.body
 
     console.log(name)
 
@@ -71,13 +70,15 @@ class TeamsController {
       return TeamsException.invalidState(res)
     }
 
-    if (!foundationDate) {
+    if (!foundationDate || typeof foundationDate !== 'number') {
       return TeamsException.invalidFoundationDate(res)
     }
 
     try {
       const team = new Team(name, state, foundationDate)
       console.log(team)
+      const errors = await validate(team)
+      console.log(errors)
       const conn = await connect()
       await conn.query('INSERT INTO ?? SET ?', [this.table, team])
       return res.json({

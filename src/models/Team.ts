@@ -1,8 +1,11 @@
 import { TeamInterface } from '../interfaces/TeamInterface'
 import { getDateTimeFromMilli } from '../utils/DateUtil'
+import { IsString } from 'class-validator'
 
 class Team implements TeamInterface {
+  @IsString()
   public name: string;
+
   public state: string;
   public foundationDate: string
 

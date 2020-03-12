@@ -1,4 +1,7 @@
-import { createPool } from 'mysql2/promise'
+// import { createPool } from 'mysql2/promise'
+import { createConnection } from 'typeorm'
+import path from 'path'
+import Teste from './entity/Teste'
 
 export async function connect () {
   const {
@@ -8,13 +11,18 @@ export async function connect () {
     MYSQL_DATABASE
   } = process.env
 
-  const connection = await createPool({
+  const connection = await createConnection({
+    type: 'mysql',
     host: MYSQL_HOST,
-    user: MYSQL_USER,
+    port: 3306,
+    username: MYSQL_USER,
     password: MYSQL_PASSWORD,
     database: MYSQL_DATABASE,
-    connectTimeout: 5000,
-    connectionLimit: 10
+    entities: [
+      Teste
+    ],
+    synchronize: true,
+    logging: false
   })
 
   return connection
