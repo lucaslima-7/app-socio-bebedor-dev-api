@@ -1,13 +1,15 @@
-export function getDateTimeFromMilli (value: number): string {
+export function getDateTimeFromSeconds (value: number): string {
   const options = {
-    year: '2-digit',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZone: 'America/Sao_Paulo'
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    timeZone: 'America/Sao_Paulo',
+    hour12: false
   }
-
-  return new Date(value).toLocaleDateString('pt-BR', options)
+  const date = new Date(value * 1000).toLocaleDateString('pt-BR', options)
+  console.log(date)
+  return date
 }

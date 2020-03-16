@@ -1,7 +1,6 @@
 // import { createPool } from 'mysql2/promise'
 import { createConnection } from 'typeorm'
 import path from 'path'
-import Teste from './entity/Teste'
 
 export async function connect () {
   const {
@@ -19,11 +18,12 @@ export async function connect () {
     password: MYSQL_PASSWORD,
     database: MYSQL_DATABASE,
     entities: [
-      Teste
+      path.join(__dirname, '/entity/*.ts')
     ],
     synchronize: true,
     logging: false
   })
+  console.log('Banco Conectado', connection.isConnected)
 
   return connection
 }

@@ -1,89 +1,130 @@
 import { Request, Response } from 'express'
-import { connect } from '../database'
-import { TeamInterface } from '../interfaces/TeamInterface'
+import { getRepository } from 'typeorm'
+import Teams from '../entity/Teams'
+import TeamsExceptions from '../handlers/TeamsExceptions'
 import HttpException from '../handlers/HttpException'
-import TeamsException from '../handlers/TeamsExceptions'
-import Team from '../models/Team'
-import { validate } from 'class-validator'
 
 class TeamsController {
   private defaultLimit = 10;
-  private defaultOffset = 0;
-  private table = 'teams'
+  private defaultOffset = 0
 
   constructor () {
-    this.getTeamsCount = this.getTeamsCount.bind(this)
     this.getTeams = this.getTeams.bind(this)
-    this.getTeamById = this.getTeamById.bind(this)
-    this.createTeam = this.createTeam.bind(this)
-  }
-
-  public async getTeamsCount (req: Request, res: Response): Promise<Response> {
-    const conn = await connect()
-    const count = await conn.query('SELECT count(*) as TotalCount FROM ??', [this.table])
-    const formattedCount = count[0][0].TotalCount
-    return res.json({
-      count: formattedCount
-    })
   }
 
   public async getTeams (req: Request, res: Response): Promise<Response> {
-    const conn = await connect()
-    const count = await conn.query('SELECT count(*) as TotalCount FROM ??', [this.table])
-    const formattedCount = count[0][0].TotalCount
     const limit = req.query.limit ? parseInt(req.query.limit) : this.defaultLimit
     const offset = req.query.offset ? parseInt(req.query.offset) : this.defaultOffset
-    const teams = await conn.query(
-      'SELECT * FROM ?? ORDER BY id ASC LIMIT ? OFFSET ?',
-      [this.table, limit, offset > formattedCount ? formattedCount : offset]
-    )
+    const teamRepository = getRepository(Teams)
+    const { count } = await teamRepository.createQueryBuilder().select('COUNT(*)', 'count').getRawOne()
+    const teams = await teamRepository.find({
+      skip: offset,
+      take: limit
+    })
     return res.json({
-      count: formattedCount,
-      data: teams[0]
+      count: parseInt(count),
+      data: teams
+    })
+  }
+
+  public async getTeamsCount (req: Request, res: Response): Promise<Response> {
+    const teamRepository = getRepository(Teams)
+    const { count } = await teamRepository.createQueryBuilder().select('COUNT(*)', 'count').getRawOne()
+    return res.json({
+      count: parseInt(count)
     })
   }
 
   public async getTeamById (req: Request, res: Response): Promise<Response> {
+    const teamRepository = getRepository(Teams)
     const id = parseInt(req.params.id)
-
     if (!id) {
-      return TeamsException.invalidId(res)
+      return TeamsExceptions.invalidId(res)
     }
 
-    const conn = await connect()
-    const team = await conn.query('SELECT * FROM ?? WHERE id = ?', [this.table, id])
+    const [team] = await teamRepository.findByIds([id])
     return res.json({
-      data: team[0]
+      data: team
+    })
+  }
+
+  public async deleteTeamById (req: Request, res: Response): Promise<Response> {
+    const teamRepository = getRepository(Teams)
+    const id = parseInt(req.params.id)
+    if (!id) {
+      return TeamsExceptions.invalidId(res)
+    }
+    await teamRepository.delete({ id })
+    return res.status(200).send({
+      message: 'Time deletado com sucesso!'
     })
   }
 
   public async createTeam (req: Request, res: Response): Promise<Response> {
     const { name, state, foundationDate } = req.body
-
-    console.log(name)
-
-    if (!name) {
-      return TeamsException.invalidName(res)
-    }
-
-    if (!state) {
-      return TeamsException.invalidState(res)
-    }
-
-    if (!foundationDate || typeof foundationDate !== 'number') {
-      return TeamsException.invalidFoundationDate(res)
-    }
-
+    const team = new Teams()
+    team.name = name
+    team.state = state
+    team.foundationDate = team.convertToDateTime(foundationDate)
     try {
-      const team = new Team(name, state, foundationDate)
-      console.log(team)
-      const errors = await validate(team)
-      console.log(errors)
-      const conn = await connect()
-      await conn.query('INSERT INTO ?? SET ?', [this.table, team])
-      return res.json({
-        message: 'Team Created'
-      })
+      const errors = await team.validateTeam(team)
+      if (errors.length > 0) {
+        return res.json({
+          message: 'Ocorreram os seguintes erros',
+          errors
+        })
+      } else {
+        const teamRepository = getRepository(Teams)
+        const alreadyHave = await teamRepository.findOne({ name, state })
+        if (alreadyHave) {
+          return res.status(400).send({
+            message: 'Já existe um time informado na cidade informada'
+          })
+        } else {
+          await teamRepository.save(team)
+          return res.status(200).send({
+            message: 'Time criado com sucesso'
+          })
+        }
+      }
+    } catch (error) {
+      console.log(error)
+      return HttpException.mySQLError(res, error)
+    }
+  }
+
+  public async updateTeamById (req: Request, res: Response): Promise<Response> {
+    const { name } = req.body
+    const id = parseInt(req.params.id)
+
+    if (!id) {
+      return TeamsExceptions.invalidId(res)
+    }
+
+    const team = new Teams()
+    team.name = name
+    try {
+      const errors = await team.validateTeam(team)
+      if (errors.length > 0) {
+        return res.status(400).send({
+          message: 'Ocorreram os seguintes erros',
+          errors
+        })
+      } else {
+        const teamRepository = getRepository(Teams)
+        const teamToUpdate = await teamRepository.findOne({ id })
+        if (teamToUpdate) {
+          teamToUpdate.name = name
+          await teamRepository.save(teamToUpdate)
+          return res.status(200).send({
+            message: 'Time atualizado com sucesso'
+          })
+        } else {
+          return res.status(400).send({
+            message: 'O time informado não foi encontrado'
+          })
+        }
+      }
     } catch (error) {
       console.log(error)
       return HttpException.mySQLError(res, error)
