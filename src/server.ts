@@ -30,7 +30,7 @@ createConnection({
   entities: [
     path.join(__dirname, '/entity/*.ts')
   ],
-  synchronize: true,
+  synchronize: false,
   logging: false
 }).then(connection => {
   console.log('Banco Conectado', connection.isConnected)
