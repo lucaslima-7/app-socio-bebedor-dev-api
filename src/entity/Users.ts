@@ -28,7 +28,6 @@ class Users implements UserInterface {
   })
   public federalId!: string
 
-  
 }
 
 export default Users
