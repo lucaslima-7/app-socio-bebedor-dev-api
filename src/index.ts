@@ -6,30 +6,34 @@ import providersRoutes from './routes/providersRoutes'
 import productsRoutes from './routes/productsRoutes'
 import boxesRoutes from './routes/boxesRoutes'
 import helmet from 'helmet'
+import serverless from 'serverless-http'
 
 class App {
-  public express: Application
+  public app: Application
 
   constructor () {
-    this.express = express()
+    this.app = express()
     this.middlewares()
     this.routes()
   }
 
   private middlewares (): void {
-    this.express.use(express.json())
-    this.express.use(cors())
-    this.express.use(helmet())
+    this.app.use(express.json())
+    this.app.use(cors())
+    this.app.use(helmet())
   }
 
   private routes (): void {
     // this.express.use('/', (req, res) => res.json('Socio Bebedor API'))
-    this.express.use('/auth', authRoutes)
-    this.express.use('/teams', teamsRoutes)
-    this.express.use('/boxes', boxesRoutes)
-    this.express.use('/providers', providersRoutes)
-    this.express.use('/products', productsRoutes)
+    this.app.use('/auth', authRoutes)
+    this.app.use('/teams', teamsRoutes)
+    this.app.use('/boxes', boxesRoutes)
+    this.app.use('/providers', providersRoutes)
+    this.app.use('/products', productsRoutes)
   }
 }
 
-export default new App().express
+const app = new App().app
+
+module.exports.handler = serverless(app)
+export default app

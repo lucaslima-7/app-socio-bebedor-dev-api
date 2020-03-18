@@ -37,7 +37,7 @@ class Teams implements TeamInterface {
   })
   public state!: string;
 
-  @Column({ type: 'datetime', nullable: false })
+  @Column({ type: 'timestamp', nullable: false })
   public foundationDate!: string
 
   public convertToDateTime (seconds: number): string {

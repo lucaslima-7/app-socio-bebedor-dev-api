@@ -1,6 +1,6 @@
 import './config/env'
 import 'reflect-metadata'
-import app from './app'
+import app from '.'
 import { createConnection } from 'typeorm'
 import path from 'path'
 

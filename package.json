@@ -4,7 +4,8 @@
   "description": "Sócio Bebedor Back-End Dev",
   "main": "index.js",
   "scripts": {
-    "dev": "set NODE_ENV=dev && ts-node-dev --respawn --transpileOnly src/server.ts"
+    "dev": "set NODE_ENV=dev && ts-node-dev --respawn --transpileOnly src/server.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Lulu Code",
@@ -27,6 +28,7 @@
     "mongodb": "^3.5.3",
     "mysql2": "^2.1.0",
     "reflect-metadata": "^0.1.13",
+    "serverless-http": "^2.3.2",
     "sha256": "^0.2.0",
     "typeorm": "^0.2.24"
   },
@@ -43,8 +45,10 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^1.19.1",
+    "serverless-offline": "^6.0.0-alpha.68",
+    "serverless-plugin-typescript": "^1.1.9",
     "sucrase": "^3.12.1",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^3.8.2"
+    "typescript": "^3.8.3"
   }
 }
