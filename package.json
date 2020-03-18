@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "set NODE_ENV=dev && ts-node-dev --respawn --transpileOnly src/server.ts",
+    "sls": "sls offline --httpPort 3333 start",
     "build": "tsc"
   },
   "keywords": [],
@@ -12,7 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/dotenv": "^8.2.0",
-    "@types/es6-shim": "^0.31.39",
     "@types/helmet": "^0.0.45",
     "@types/jsonwebtoken": "^8.3.8",
     "@types/moment": "^2.13.0",

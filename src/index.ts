@@ -1,6 +1,6 @@
 import express, { Application } from 'express'
 import cors from 'cors'
-import authRoutes from './routes/authRoutes'
+// import authRoutes from './routes/authRoutes'
 import teamsRoutes from './routes/teamsRoutes'
 import providersRoutes from './routes/providersRoutes'
 import productsRoutes from './routes/productsRoutes'
@@ -25,7 +25,7 @@ class App {
 
   private routes (): void {
     // this.express.use('/', (req, res) => res.json('Socio Bebedor API'))
-    this.app.use('/auth', authRoutes)
+    // this.app.use('/auth', authRoutes)
     this.app.use('/teams', teamsRoutes)
     this.app.use('/boxes', boxesRoutes)
     this.app.use('/providers', providersRoutes)

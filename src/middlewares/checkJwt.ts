@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 import * as jwt from 'jsonwebtoken'
-import { JWT_SECRET } from '../config/config'
 
-export const checkJwt = (req: Request, res: Response, next: NextFunction): Response => {
+export const checkJwt = (req: Request, res: Response, next: NextFunction): Response | undefined => {
   let token = req.headers['x-access-token'] as string || req.headers.authorization
+  const JWT_SECRET = 'socio@bebedor_2020-tk'
 
   if (token) {
     if (token.startsWith('Bearer ')) {

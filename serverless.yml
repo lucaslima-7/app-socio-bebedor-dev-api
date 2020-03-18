@@ -1,37 +1,48 @@
 org: lucaslima7
 app: socio-bebedor-service-app
 service: socio-bebedor-service
-
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   stage: dev
   region: us-east-1
-  memorySize: 512
-
 functions:
-  teamsFunc:
-    handler: index.handler
+  getTeams:
+    handler: src/index.handler
     events:
       - http:
           path: teams
           method: get
+  getTeamsCount:
+    handler: src/index.handler
+    events:
       - http:
           path: teams/count
           method: get
+  getTeamById:
+    handler: src/index.handler
+    events:
       - http:
           path: teams/{id}
           method: get
-      - http:
-          path: teams
-          method: post
-      - http:
-          path: teams/{id}
-          method: put
+  deleteTeamById:
+    handler: src/index.handler
+    events:
       - http:
           path: teams/{id}
           method: delete
-
+  createTeam:
+    handler: src/index.handler
+    events:
+      - http: 
+          path: teams
+          method: post
+  updateTeam:
+    handler: src/index.handler
+    events:
+      - http:
+          path: teams/{id}
+          method: put
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
