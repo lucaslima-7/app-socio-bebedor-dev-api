@@ -4,8 +4,8 @@
   "description": "Sócio Bebedor Back-End Dev",
   "main": "index.js",
   "scripts": {
-    "dev": "set NODE_ENV=dev && ts-node-dev --respawn --transpileOnly src/server.ts",
-    "sls": "sls offline --httpPort 3333 start",
+    "dev": "set NODE_ENV=dev && ts-node-dev --respawn --transpileOnly src/index.ts",
+    "sls": "sls offline --skipCacheInvalidation --httpPort 3333 start",
     "build": "tsc"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
     "@types/mysql2": "types/mysql2",
     "body-parser": "^1.19.0",
     "class-validator": "^0.11.0",
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
