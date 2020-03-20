@@ -4,7 +4,7 @@ import { checkJwt } from '../middlewares/checkJwt'
 
 const router = Router()
 
-router.get('/', [checkJwt], TeamsController.getTeams)
+router.get('/', TeamsController.getTeams)
 router.get('/count', [checkJwt], TeamsController.getTeamsCount)
 router.get('/:id', [checkJwt], TeamsController.getTeamById)
 router.delete('/:id', [checkJwt], TeamsController.deleteTeamById)
