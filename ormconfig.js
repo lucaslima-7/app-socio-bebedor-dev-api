@@ -15,6 +15,6 @@ module.exports = {
   database: MYSQL_DATABASE,
   // eslint-disable-next-line no-path-concat
   entities: ['src/entity/*.ts'],
-  synchronize: false,
+  synchronize: true,
   logging: false
 }

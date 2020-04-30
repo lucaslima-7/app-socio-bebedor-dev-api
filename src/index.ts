@@ -5,9 +5,10 @@ import cors from 'cors'
 import colors from 'colors/safe'
 // import authRoutes from './routes/authRoutes'
 import teamsRoutes from './routes/teamsRoutes'
+import usersRoutes from './routes/usersRoutes'
 import helmet from 'helmet'
 import serverless from 'serverless-http'
-import { createConnection, Connection } from 'typeorm'
+import { createConnection, Connection, ConnectionManager, getConnectionManager } from 'typeorm'
 
 // import * as jwt from 'jsonwebtoken'
 // import { JWT_SECRET } from './config/config'
@@ -38,6 +39,7 @@ class App {
     // this.express.use('/', (req, res) => res.json('Socio Bebedor API'))
     // this.app.use('/auth', authRoutes)
     this.app.use('/teams', teamsRoutes)
+    this.app.use('/users', usersRoutes)
   }
 
   public start (): void {
@@ -46,15 +48,21 @@ class App {
     })
   }
 
-  public async connection (): Promise<Connection> {
-    const connection = await createConnection()
-    console.log(colors.green('Banco Conectado'))
-    return connection
+  public connection (): Promise<Connection> {
+    const manager: ConnectionManager = getConnectionManager()
+    if (manager.has('default')) {
+      return Promise.resolve(manager.get())
+    } else {
+      console.log('Inicializando...')
+      const conn = createConnection()
+      return conn
+    }
   }
 }
 
 const app = new App()
 app.connection().then(() => {
+  console.log(colors.green('Banco Conectado'))
   app.start()
 })
 
