@@ -1,12 +1,17 @@
+const {
+  EMAIL_USER,
+  EMAIL_PASS
+} = process.env
+
 export default {
   host: 'smtp.mailtrap.io',
   port: 2525,
   secure: false,
   auth: {
-    user: '78af03bc5372af',
-    pass: 'cd7650036ddb01'
+    user: EMAIL_USER,
+    pass: EMAIL_PASS
   },
   default: {
-    from: 'Equipe Sunset <noreply@sunsetbeer.com.br>'
+    from: 'Equipe <noreply@equipe.com.br>'
   }
 }

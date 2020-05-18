@@ -8,7 +8,7 @@ import teamsRoutes from './routes/teamsRoutes'
 import usersRoutes from './routes/usersRoutes'
 import helmet from 'helmet'
 import serverless from 'serverless-http'
-import { createConnection, Connection, ConnectionManager, getConnectionManager } from 'typeorm'
+import { createConnection, Connection } from 'typeorm'
 
 // import * as jwt from 'jsonwebtoken'
 // import { JWT_SECRET } from './config/config'
@@ -48,21 +48,19 @@ class App {
     })
   }
 
-  public connection (): Promise<Connection> {
-    const manager: ConnectionManager = getConnectionManager()
-    if (manager.has('default')) {
-      return Promise.resolve(manager.get())
-    } else {
-      console.log('Inicializando...')
-      const conn = createConnection()
-      return conn
+  public async connection (): Promise<Connection | undefined> {
+    try {
+      const connection = await createConnection()
+      console.log(colors.green('Banco Conectado'))
+      return connection
+    } catch (error) {
+      console.log(error)
     }
   }
 }
 
 const app = new App()
 app.connection().then(() => {
-  console.log(colors.green('Banco Conectado'))
   app.start()
 })
 

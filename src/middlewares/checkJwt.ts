@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken'
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction): Response | undefined => {
   let token = req.headers['x-access-token'] as string || req.headers.authorization
-  const JWT_SECRET = 'socio@bebedor_2020-tk'
+  const JWT_SECRET = `${process.env.JWT_SECRET}`
 
   if (token) {
     if (token.startsWith('Bearer ')) {
