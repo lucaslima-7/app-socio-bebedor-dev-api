@@ -13,7 +13,6 @@ module.exports = {
   username: MYSQL_USER,
   password: MYSQL_PASSWORD,
   database: MYSQL_DATABASE,
-  // eslint-disable-next-line no-path-concat
   entities: ['src/entity/*.ts'],
   synchronize: true,
   logging: false
